@@ -10,5 +10,10 @@ pub struct Args {
 pub enum Command {
     Detect {
         input: String,        
+    },
+    Convert {
+        input: String,
+        #[arg(long)]
+        to: String,
     }
 }

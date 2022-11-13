@@ -40,6 +40,21 @@ impl Case {
             return None
         }
     }
+
+    // TODO: This must be much more ergonomic to be useable, for exmaple:
+    // * Offering short, two-word versions like ss, kc, cc, and pc
+    // * Using just the first word like "snake", "kebab", "camel" or "pascal"
+    pub fn parse(string: &str) -> Self {
+        match string {
+            "snake_case" => Case::SNAKE,
+            "kebab-case" => Case::KEBAB,
+            "camelCase" => Case::CAMEL,
+            "PascalCase" => Case::PASCAL,
+            _ => {
+                panic!("{} not recognized!", string);
+            }
+        }
+    }
 }
 
 impl Display for Case {

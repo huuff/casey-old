@@ -5,7 +5,9 @@ pub mod args;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
+use crate::convert::convert;
 
+// TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
 
@@ -16,7 +18,12 @@ pub fn run(args: Args) -> String {
             if let Some(variant) = case {
                 output.push_str(&variant.to_string());
             }
-        } 
+        },
+        Command::Convert { input, to } => {
+            let case = Case::parse(&to);
+
+            output.push_str(&convert(&input, case));
+        }
     };
 
     output
