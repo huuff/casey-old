@@ -8,10 +8,17 @@ pub enum Case {
 }
 
 impl Case {
-    // TODO: Panic when string contains a space
-    // TODO: Panic on empty string
+    // TODO: do this all with regex
     pub fn detect(string: &str) -> Option<Case> {
-        if string.chars().any(|c| c.is_uppercase()) {
+        if string.is_empty() {
+            panic!("Can't detect case on an empty string!");
+        }
+
+        if string.contains(char::is_whitespace) {
+            panic!("Can't detect on a string with whitespace!");
+        }
+
+        if string.contains(char::is_uppercase) {
             // If it has an uppercased letter, we know it's either camelCase or PascalCase
             // First letter decides
             let first_char = string.chars().nth(0).unwrap();
@@ -108,5 +115,25 @@ mod tests {
 
         // ASSERT
         assert_eq!(case, Some(Case::PASCAL));
+    }
+
+    #[test]
+    #[should_panic(expected = "empty string")]
+    fn panics_on_empty_string() {
+        // ARRANGE
+        let word = "";
+
+        // ACT
+        Case::detect(word);
+    }
+
+    #[test]
+    #[should_panic(expected = "whitespace")]
+    fn panics_on_whitespace() {
+        // ARRANGE
+        let word = "test word";
+
+        // ACT
+        Case::detect(word);
     }
 }
