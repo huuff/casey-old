@@ -1,0 +1,2 @@
+# Tasks
+* Use ASCII everywhere
