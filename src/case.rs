@@ -3,6 +3,7 @@ use std::fmt::Display;
 #[derive(Debug, PartialEq)]
 pub enum Case {
     SNAKE,
+    SCREAMING_SNAKE, // Example: ENVIRONMENT_VAR
     KEBAB,
     CAMEL,
     PASCAL,
