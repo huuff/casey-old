@@ -97,4 +97,16 @@ mod tests {
         // ASSERT
         assert_eq!(case, None);
     }
+
+    #[test]
+    fn detects_single_word_pascal() {
+        // ARRANGE
+        let word = "Test";
+
+        // ACT
+        let case = Case::detect(word);
+
+        // ASSERT
+        assert_eq!(case, Some(Case::PASCAL));
+    }
 }
