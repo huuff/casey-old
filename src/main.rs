@@ -1,7 +1,10 @@
-mod case;
-mod normalize;
-mod convert;
+use casey::args::Args;
+use clap::Parser;
 
 fn main() {
-    println!("Hello, world!");
+    let args = Args::parse();
+
+    let output = casey::run(args);
+
+    println!("{}", output);
 }
