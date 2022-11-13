@@ -79,4 +79,16 @@ mod tests {
         // ASSERT
         assert_eq!(String::from("TestWord"), converted);
     }
+
+    #[test]
+    fn converts_long_camel_to_kebab() {
+        // ARRANGE
+        let string = "kindOfLongTestPhrase";
+
+        // ACT
+        let converted = convert(string, Case::KEBAB);
+
+        // ASSERT
+        assert_eq!(String::from("kind-of-long-test-phrase"), converted);
+    }
 }
