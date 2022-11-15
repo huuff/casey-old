@@ -42,23 +42,21 @@ pub fn convert_token(string: &str, case: &Case) -> String {
     result
 }
 
+// TODO: Remove the extra spaces before newlines (do it functionally?)
 pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
     let mut result = String::new();
 
 
     for line in text.lines() {
         for token in line.split_ascii_whitespace() {
-            match Case::detect(token) {
-                Some(token_case) => {
-                    if token_case == from_case {
-                        result.push_str(
-                            &convert_token(token, &to_case)
-                        )
-                    }
-                }
-                None => {
-                    result.push_str(token);
-                }
+            let token_case = Case::detect(token);
+
+            if token_case.is_some() && token_case.unwrap() == from_case {
+                result.push_str(
+                    &convert_token(token, &to_case)
+                )
+            } else {
+                result.push_str(token);
             }
             result.push_str(" ");
         }
