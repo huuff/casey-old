@@ -5,7 +5,7 @@ pub mod args;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
-use crate::convert::{convert_token, convert_text};
+use crate::convert::convert_text;
 use std::io;
 
 // TODO: Test
@@ -27,8 +27,7 @@ pub fn run(args: Args) -> String {
 
             match input {
                 Some(input) => {
-                    // TODO: use convert_text?
-                    output.push_str(&convert_token(&input, &to));
+                    output.push_str(&convert_text(&input, from, to));
                 }
                 None => {
                     // TODO: Optional from here? (And just detect it)
