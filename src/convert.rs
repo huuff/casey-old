@@ -42,28 +42,26 @@ pub fn convert_token(string: &str, case: &Case) -> String {
     result
 }
 
-// TODO: Remove the extra spaces before newlines (do it functionally?)
+// XXX: Likely not efficient
 pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
-    let mut result = String::new();
+    text.lines()
+        .map(|line| {
+            line.split_ascii_whitespace()
+                .map(|token| {
+                    let token_case = Case::detect(token);
 
+                    if token_case.is_some() && token_case.unwrap() == from_case {
+                        convert_token(token, &to_case)
+                    } else {
+                        String::from(token)
+                    }
 
-    for line in text.lines() {
-        for token in line.split_ascii_whitespace() {
-            let token_case = Case::detect(token);
-
-            if token_case.is_some() && token_case.unwrap() == from_case {
-                result.push_str(
-                    &convert_token(token, &to_case)
-                )
-            } else {
-                result.push_str(token);
-            }
-            result.push_str(" ");
-        }
-        result.push_str("\n");
-    }
-
-    result
+                })
+                .collect::<Vec<String>>()
+                .join(" ")
+        })
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
 #[cfg(test)]
@@ -136,14 +134,12 @@ mod tests {
         let text = "\
 This is a sampleText
 with some camelCase
-tokens
-";
+tokens";
 
         let expected = "\
 This is a sample_text
 with some camel_case
-tokens
-";
+tokens";
         // ACT
         let converted = convert_text(text, Case::Camel, Case::Snake);
 
