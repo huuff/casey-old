@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Case {
     Snake,
     ScreamingSnake, // Example: ENVIRONMENT_VAR

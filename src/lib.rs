@@ -22,7 +22,7 @@ pub fn run(args: Args) -> String {
         Command::Convert { input, to } => {
             let case = Case::parse(&to);
 
-            output.push_str(&convert_token(&input, case));
+            output.push_str(&convert_token(&input, &case));
         }
     };
 

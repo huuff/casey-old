@@ -6,7 +6,7 @@ enum SeparatorAction {
     Uppercase,
 }
 
-pub fn convert_token(string: &str, case: Case) -> String {
+pub fn convert_token(string: &str, case: &Case) -> String {
     let mut result = String::new();
     let separator_action = match case {
         Case::Snake | Case::ScreamingSnake => SeparatorAction::Append('_'),
@@ -17,7 +17,7 @@ pub fn convert_token(string: &str, case: Case) -> String {
 
     let normalized = normalize(string);
 
-    let mut uppercase_next = case == Case::ScreamingSnake || case == Case::Pascal;
+    let mut uppercase_next = *case == Case::ScreamingSnake || *case == Case::Pascal;
     for c in normalized.chars() {
         if c == ' ' {
             if let SeparatorAction::Append(separator) = separator_action {
@@ -34,9 +34,35 @@ pub fn convert_token(string: &str, case: Case) -> String {
             }
         }
 
-        if case == Case::ScreamingSnake {
+        if *case == Case::ScreamingSnake {
             uppercase_next = true;
         }
+    }
+
+    result
+}
+
+pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
+    let mut result = String::new();
+
+
+    for line in text.lines() {
+        for token in line.split_ascii_whitespace() {
+            match Case::detect(token) {
+                Some(token_case) => {
+                    if token_case == from_case {
+                        result.push_str(
+                            &convert_token(token, &to_case)
+                        )
+                    }
+                }
+                None => {
+                    result.push_str(token);
+                }
+            }
+            result.push_str(" ");
+        }
+        result.push_str("\n");
     }
 
     result
@@ -47,62 +73,83 @@ mod tests {
     use super::*;
 
     #[test]
-    fn converts_snake_to_camel() {
+    fn converts_token_snake_to_camel() {
         // ARRANGE
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, Case::Camel);
+        let converted = convert_token(string, &Case::Camel);
 
         // ASSERT
         assert_eq!(String::from("testWord"), converted);
     }
 
     #[test]
-    fn converts_snake_to_kebab() {
+    fn converts_token_snake_to_kebab() {
         // ARRANGE
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, Case::Kebab);
+        let converted = convert_token(string, &Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("test-word"), converted);
     }
 
     #[test]
-    fn converts_snake_to_pascal() {
+    fn converts_token_snake_to_pascal() {
         // ARRANGE
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, Case::Pascal);
+        let converted = convert_token(string, &Case::Pascal);
 
         // ASSERT
         assert_eq!(String::from("TestWord"), converted);
     }
 
     #[test]
-    fn converts_long_camel_to_kebab() {
+    fn converts_token_long_camel_to_kebab() {
         // ARRANGE
         let string = "kindOfLongTestPhrase";
 
         // ACT
-        let converted = convert_token(string, Case::Kebab);
+        let converted = convert_token(string, &Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("kind-of-long-test-phrase"), converted);
     }
 
     #[test]
-    fn converts_camel_case_to_screaming_snake() {
+    fn converts_token_camel_case_to_screaming_snake() {
         // ARRANGE
         let string = "camelCase";
 
         // ACT
-        let converted = convert_token(string, Case::ScreamingSnake);
+        let converted = convert_token(string, &Case::ScreamingSnake);
 
         // ASSERT
         assert_eq!(String::from("CAMEL_CASE"), converted);
+    }
+
+    #[test]
+    fn converts_text_camel_to_snake() {
+        // ARRANGE
+        let text = "\
+This is a sampleText
+with some camelCase
+tokens
+";
+
+        let expected = "\
+This is a sample_text
+with some camel_case
+tokens
+";
+        // ACT
+        let converted = convert_text(text, Case::Camel, Case::Snake);
+
+        // ASSERT
+        assert_eq!(expected, converted);
     }
 }
