@@ -2,11 +2,11 @@ use std::fmt::Display;
 
 #[derive(Debug, PartialEq)]
 pub enum Case {
-    SNAKE,
-    SCREAMING_SNAKE, // Example: ENVIRONMENT_VAR
-    KEBAB,
-    CAMEL,
-    PASCAL,
+    Snake,
+    ScreamingSnake, // Example: ENVIRONMENT_VAR
+    Kebab,
+    Camel,
+    Pascal,
 }
 
 impl Case {
@@ -24,23 +24,23 @@ impl Case {
             if string.chars()
                 .filter(|c| c.is_alphabetic())
                 .all(|c| c.is_ascii_uppercase()) {
-               return Some(Case::SCREAMING_SNAKE);
+               return Some(Case::ScreamingSnake);
             }
 
             // If it has an uppercased letter, we know it's either camelCase or PascalCase
             // First letter decides
             let first_char = string.chars().nth(0).unwrap();
             return if first_char.is_uppercase() {
-                Some(Case::PASCAL)
+                Some(Case::Pascal)
             } else {
-                Some(Case::CAMEL)
+                Some(Case::Camel)
             };
         }
 
         if string.contains("_") {
-            return Some(Case::SNAKE);
+            return Some(Case::Snake);
         } else if string.contains("-") {
-            return Some(Case::KEBAB);
+            return Some(Case::Kebab);
         } else {
             // Must be a single lowercased word! Therefore we don't know
             // (snake? kebab? camel?)
@@ -53,10 +53,10 @@ impl Case {
     // * Using just the first word like "snake", "kebab", "camel" or "pascal"
     pub fn parse(string: &str) -> Self {
         match string {
-            "snake_case" => Case::SNAKE,
-            "kebab-case" => Case::KEBAB,
-            "camelCase" => Case::CAMEL,
-            "PascalCase" => Case::PASCAL,
+            "snake_case" => Case::Snake,
+            "kebab-case" => Case::Kebab,
+            "camelCase" => Case::Camel,
+            "PascalCase" => Case::Pascal,
             _ => {
                 panic!("{} not recognized!", string);
             }
@@ -67,11 +67,11 @@ impl Case {
 impl Display for Case {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let description = match self {
-            Case::SNAKE => "snake_case",
-            Case::KEBAB => "kebab-case",
-            Case::CAMEL => "camelCase",
-            Case::PASCAL => "PascalCase",
-            Case::SCREAMING_SNAKE => "SCREAMING_SNAKE",
+            Case::Snake => "snake_case",
+            Case::Kebab => "kebab-case",
+            Case::Camel => "camelCase",
+            Case::Pascal => "PascalCase",
+            Case::ScreamingSnake => "SCREAMING_SNAKE",
         };
     
         write!(f, "{}", description)
@@ -91,7 +91,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::SNAKE));
+        assert_eq!(case, Some(Case::Snake));
     }
 
     #[test]
@@ -103,7 +103,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::SCREAMING_SNAKE));
+        assert_eq!(case, Some(Case::ScreamingSnake));
     }
 
     #[test]
@@ -115,7 +115,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::KEBAB));
+        assert_eq!(case, Some(Case::Kebab));
     }
 
     #[test]
@@ -127,7 +127,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::CAMEL));
+        assert_eq!(case, Some(Case::Camel));
     }
 
     #[test]
@@ -139,7 +139,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::PASCAL));
+        assert_eq!(case, Some(Case::Pascal));
     }
 
     #[test]
@@ -163,7 +163,7 @@ mod tests {
         let case = Case::detect(word);
 
         // ASSERT
-        assert_eq!(case, Some(Case::PASCAL));
+        assert_eq!(case, Some(Case::Pascal));
     }
 
     #[test]

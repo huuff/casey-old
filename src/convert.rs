@@ -9,15 +9,15 @@ enum SeparatorAction {
 pub fn convert(string: &str, case: Case) -> String {
     let mut result = String::new();
     let separator_action = match case {
-        Case::SNAKE | Case::SCREAMING_SNAKE => SeparatorAction::Append('_'),
-        Case::KEBAB => SeparatorAction::Append('-'),
-        Case::CAMEL => SeparatorAction::Uppercase,
-        Case::PASCAL => SeparatorAction::Uppercase,
+        Case::Snake | Case::ScreamingSnake => SeparatorAction::Append('_'),
+        Case::Kebab => SeparatorAction::Append('-'),
+        Case::Camel => SeparatorAction::Uppercase,
+        Case::Pascal => SeparatorAction::Uppercase,
     };
 
     let normalized = normalize(string);
 
-    let mut uppercase_next = case == Case::SCREAMING_SNAKE || case == Case::PASCAL;
+    let mut uppercase_next = case == Case::ScreamingSnake || case == Case::Pascal;
     for c in normalized.chars() {
         if c == ' ' {
             if let SeparatorAction::Append(separator) = separator_action {
@@ -34,7 +34,7 @@ pub fn convert(string: &str, case: Case) -> String {
             }
         }
 
-        if case == Case::SCREAMING_SNAKE {
+        if case == Case::ScreamingSnake {
             uppercase_next = true;
         }
     }
@@ -52,7 +52,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::CAMEL);
+        let converted = convert(string, Case::Camel);
 
         // ASSERT
         assert_eq!(String::from("testWord"), converted);
@@ -64,7 +64,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::KEBAB);
+        let converted = convert(string, Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("test-word"), converted);
@@ -76,7 +76,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::PASCAL);
+        let converted = convert(string, Case::Pascal);
 
         // ASSERT
         assert_eq!(String::from("TestWord"), converted);
@@ -88,7 +88,7 @@ mod tests {
         let string = "kindOfLongTestPhrase";
 
         // ACT
-        let converted = convert(string, Case::KEBAB);
+        let converted = convert(string, Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("kind-of-long-test-phrase"), converted);
@@ -100,7 +100,7 @@ mod tests {
         let string = "camelCase";
 
         // ACT
-        let converted = convert(string, Case::SCREAMING_SNAKE);
+        let converted = convert(string, Case::ScreamingSnake);
 
         // ASSERT
         assert_eq!(String::from("CAMEL_CASE"), converted);
