@@ -1,5 +1,5 @@
 # Tasks
-* Use ASCII everywhere
+* Reject non-ascii input
 * Make it work on a long text
 * Correct handling of errors (i.e. less panicking)
 * Reading from stdin instead of a string argument (for convert)

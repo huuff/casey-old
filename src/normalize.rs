@@ -2,7 +2,7 @@ pub fn normalize(string: &str) -> String {
     let mut result = String::new(); 
 
     for (i, c) in string.chars().enumerate() {
-        if i != 0 && (c == '_' || c == '-' || c.is_uppercase())  {
+        if i != 0 && (c == '_' || c == '-' || c.is_ascii_uppercase())  {
             result.push(' ');
         }
 

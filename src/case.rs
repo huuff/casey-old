@@ -22,7 +22,7 @@ impl Case {
 
         if string.contains(char::is_uppercase) {
             if string.chars()
-                .filter(|c| c.is_alphabetic())
+                .filter(|c| c.is_ascii_alphabetic())
                 .all(|c| c.is_ascii_uppercase()) {
                return Some(Case::ScreamingSnake);
             }
@@ -30,7 +30,7 @@ impl Case {
             // If it has an uppercased letter, we know it's either camelCase or PascalCase
             // First letter decides
             let first_char = string.chars().nth(0).unwrap();
-            return if first_char.is_uppercase() {
+            return if first_char.is_ascii_uppercase() {
                 Some(Case::Pascal)
             } else {
                 Some(Case::Camel)
