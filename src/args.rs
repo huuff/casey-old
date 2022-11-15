@@ -9,10 +9,14 @@ pub struct Args {
 #[derive(Subcommand)]
 pub enum Command {
     Detect {
-        input: String,        
+        input: Option<String>,
     },
     Convert {
-        input: String,
+        input: Option<String>,
+
+        #[arg(long)]
+        from: String,
+
         #[arg(long)]
         to: String,
     }

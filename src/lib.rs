@@ -5,7 +5,8 @@ pub mod args;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
-use crate::convert::convert_token;
+use crate::convert::{convert_token, convert_text};
+use std::io;
 
 // TODO: Test
 pub fn run(args: Args) -> String {
@@ -13,16 +14,30 @@ pub fn run(args: Args) -> String {
 
     match args.command {
         Command::Detect { input } => {
-            let case =  Case::detect(&input);
+            // TODO: Handle missing input
+            let case =  Case::detect(&input.unwrap());
             
             if let Some(variant) = case {
                 output.push_str(&variant.to_string());
             }
         },
-        Command::Convert { input, to } => {
-            let case = Case::parse(&to);
+        Command::Convert { input, from, to } => {
+            let from = Case::parse(&from);
+            let to = Case::parse(&to);
 
-            output.push_str(&convert_token(&input, &case));
+            match input {
+                Some(input) => {
+                    // TODO: use convert_text?
+                    output.push_str(&convert_token(&input, &to));
+                }
+                None => {
+                    // TODO: Optional from here? (And just detect it)
+                    let input = io::read_to_string(io::stdin()).unwrap();
+
+                    output.push_str(&convert_text(&input, from, to));
+
+                }
+            }
         }
     };
 

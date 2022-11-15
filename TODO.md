@@ -1,7 +1,6 @@
 # Tasks
 * Reject non-ascii input
-* Make it work on a long text
-* Reading from stdin instead of a string argument (for convert)
+* Maybe print lines as they get processed instead of buffering everything?
 * Reading from a file
 * Specify several types of conversions for a single text
 * Derive the command information form `clap`
