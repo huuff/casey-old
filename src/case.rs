@@ -21,6 +21,12 @@ impl Case {
         }
 
         if string.contains(char::is_uppercase) {
+            if string.chars()
+                .filter(|c| c.is_alphabetic())
+                .all(|c| c.is_ascii_uppercase()) {
+               return Some(Case::SCREAMING_SNAKE);
+            }
+
             // If it has an uppercased letter, we know it's either camelCase or PascalCase
             // First letter decides
             let first_char = string.chars().nth(0).unwrap();
@@ -65,6 +71,7 @@ impl Display for Case {
             Case::KEBAB => "kebab-case",
             Case::CAMEL => "camelCase",
             Case::PASCAL => "PascalCase",
+            Case::SCREAMING_SNAKE => "SCREAMING_SNAKE",
         };
     
         write!(f, "{}", description)
@@ -85,6 +92,18 @@ mod tests {
 
         // ASSERT
         assert_eq!(case, Some(Case::SNAKE));
+    }
+
+    #[test]
+    fn detects_screaming_snake() {
+        // ARRANGE
+        let word = "TEST_WORD";
+
+        // ACT
+        let case = Case::detect(word);
+
+        // ASSERT
+        assert_eq!(case, Some(Case::SCREAMING_SNAKE));
     }
 
     #[test]

@@ -9,7 +9,7 @@ enum SeparatorAction {
 pub fn convert(string: &str, case: Case) -> String {
     let mut result = String::new();
     let separator_action = match case {
-        Case::SNAKE => SeparatorAction::Append('_'),
+        Case::SNAKE | Case::SCREAMING_SNAKE => SeparatorAction::Append('_'),
         Case::KEBAB => SeparatorAction::Append('-'),
         Case::CAMEL => SeparatorAction::Uppercase,
         Case::PASCAL => SeparatorAction::Uppercase,
@@ -17,11 +17,9 @@ pub fn convert(string: &str, case: Case) -> String {
 
     let normalized = normalize(string);
 
-    let mut uppercase_next = false;
-    for (i, c) in normalized.chars().enumerate() {
-        if i == 0 && case == Case::PASCAL {
-            result.push(c.to_ascii_uppercase());
-        } else if c == ' ' {
+    let mut uppercase_next = case == Case::SCREAMING_SNAKE || case == Case::PASCAL;
+    for c in normalized.chars() {
+        if c == ' ' {
             if let SeparatorAction::Append(separator) = separator_action {
                 result.push(separator);
             } else {
@@ -34,6 +32,10 @@ pub fn convert(string: &str, case: Case) -> String {
             } else {
                 result.push(c);
             }
+        }
+
+        if case == Case::SCREAMING_SNAKE {
+            uppercase_next = true;
         }
     }
 
@@ -90,5 +92,17 @@ mod tests {
 
         // ASSERT
         assert_eq!(String::from("kind-of-long-test-phrase"), converted);
+    }
+
+    #[test]
+    fn converts_camel_case_to_screaming_snake() {
+        // ARRANGE
+        let string = "camelCase";
+
+        // ACT
+        let converted = convert(string, Case::SCREAMING_SNAKE);
+
+        // ASSERT
+        assert_eq!(String::from("CAMEL_CASE"), converted);
     }
 }
