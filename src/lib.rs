@@ -5,7 +5,7 @@ pub mod args;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
-use crate::convert::convert;
+use crate::convert::convert_token;
 
 // TODO: Test
 pub fn run(args: Args) -> String {
@@ -22,7 +22,7 @@ pub fn run(args: Args) -> String {
         Command::Convert { input, to } => {
             let case = Case::parse(&to);
 
-            output.push_str(&convert(&input, case));
+            output.push_str(&convert_token(&input, case));
         }
     };
 

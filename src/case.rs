@@ -48,6 +48,7 @@ impl Case {
         }
     }
 
+    // TODO: Add SCREAMING_SNAKE
     // TODO: This must be much more ergonomic to be useable, for exmaple:
     // * Offering short, two-word versions like ss, kc, cc, and pc
     // * Using just the first word like "snake", "kebab", "camel" or "pascal"

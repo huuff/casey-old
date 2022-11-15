@@ -6,7 +6,7 @@ enum SeparatorAction {
     Uppercase,
 }
 
-pub fn convert(string: &str, case: Case) -> String {
+pub fn convert_token(string: &str, case: Case) -> String {
     let mut result = String::new();
     let separator_action = match case {
         Case::Snake | Case::ScreamingSnake => SeparatorAction::Append('_'),
@@ -52,7 +52,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::Camel);
+        let converted = convert_token(string, Case::Camel);
 
         // ASSERT
         assert_eq!(String::from("testWord"), converted);
@@ -64,7 +64,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::Kebab);
+        let converted = convert_token(string, Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("test-word"), converted);
@@ -76,7 +76,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert(string, Case::Pascal);
+        let converted = convert_token(string, Case::Pascal);
 
         // ASSERT
         assert_eq!(String::from("TestWord"), converted);
@@ -88,7 +88,7 @@ mod tests {
         let string = "kindOfLongTestPhrase";
 
         // ACT
-        let converted = convert(string, Case::Kebab);
+        let converted = convert_token(string, Case::Kebab);
 
         // ASSERT
         assert_eq!(String::from("kind-of-long-test-phrase"), converted);
@@ -100,7 +100,7 @@ mod tests {
         let string = "camelCase";
 
         // ACT
-        let converted = convert(string, Case::ScreamingSnake);
+        let converted = convert_token(string, Case::ScreamingSnake);
 
         // ASSERT
         assert_eq!(String::from("CAMEL_CASE"), converted);
