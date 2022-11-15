@@ -6,6 +6,8 @@ pub struct Args {
     pub command: Command,
 }
 
+// TODO: Literal inputs behind a flag? (--literal?)
+// TODO: Short arg options
 #[derive(Subcommand)]
 pub enum Command {
     Detect {
