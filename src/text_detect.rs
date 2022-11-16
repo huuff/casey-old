@@ -1,6 +1,5 @@
 use crate::case::Case;
 use std::collections::HashMap;
-use std::fmt;
 
 pub struct DetectReport {
     instances: HashMap<Case, u32>
@@ -10,13 +9,11 @@ impl DetectReport {
     pub fn new(instances: HashMap<Case, u32>) -> Self {
        Self { instances } 
     }
-}
 
-impl fmt::Display for DetectReport {
     // TODO: Test
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
-            return write!(f, "{}", self.instances.keys().last().unwrap());
+            return format!("{}", self.instances.keys().last().unwrap());
         }
 
         let total: u32 = self.instances.values().sum();
@@ -27,9 +24,10 @@ impl fmt::Display for DetectReport {
             let description = std::format!("{}: {}%", key, percentage);
             result.push(description);
         }
-        write!(f, "{}", result.join(&"\n"))
+        format!("{}", result.join(&"\n"))
     } 
 }
+
 
 pub fn text_detect(text: &str) -> DetectReport {
     let mut result = HashMap::new();

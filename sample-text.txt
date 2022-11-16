@@ -1,0 +1,3 @@
+hello this_is_some kindaContrivedExample
+with all_types_of_cases but mainly_snake but
+also SCREAMING_SNAKE just to TestSomething

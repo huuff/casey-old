@@ -46,7 +46,7 @@ pub fn run(args: Args) -> String {
 
                 let report = text_detect(&input);
 
-                output.push_str(&report.to_string());
+                output.push_str(&report.long_description());
             }
         },
         Command::Convert { inline, from, to } => {
