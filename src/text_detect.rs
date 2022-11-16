@@ -20,14 +20,14 @@ impl fmt::Display for DetectReport {
         }
 
         let total: u32 = self.instances.values().sum();
-        let mut result = String::new();
+        let mut result: Vec<String> = Vec::new();
 
         for (key, value) in self.instances.iter() {
             let percentage: f32 = (*value as f32/total as f32) * 100f32;
-            // TODO: Add to a string and then join
-            result.push_str(&std::format!("{}: {}%\n", key, percentage))
+            let description = std::format!("{}: {}%", key, percentage);
+            result.push(description);
         }
-        write!(f, "{}", result)
+        write!(f, "{}", result.join(&"\n"))
     } 
 }
 
