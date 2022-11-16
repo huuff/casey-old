@@ -10,6 +10,7 @@ use crate::convert::{convert_token, convert_text};
 use std::io;
 use crate::text_detect::text_detect;
 use std::process;
+use std::fs;
 
 fn check_inline(input: &str) {
     if input.chars().any(|c| c.is_whitespace()) {
@@ -32,12 +33,24 @@ fn check_no_from(from: Option<String>) {
     }
 }
 
+fn detect_and_collect_report(input: &str, verbose: bool, output: &mut String) {
+    check_ascii(&input);
+
+    let report = text_detect(&input);
+
+    if verbose {
+        output.push_str(&report.long_description());
+    } else {
+        output.push_str(&report.short_description());
+    }
+}
+
 // TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
 
     match args.command {
-        Command::Detect { inline, verbose } => {
+        Command::Detect { inline, file, verbose } => {
             if let Some(input) = inline {
                 check_inline(&input);
                 check_ascii(&input);
@@ -47,17 +60,15 @@ pub fn run(args: Args) -> String {
                 if let Some(case) = case {
                     output.push_str(&case.to_string());
                 }
+            } else if let Some(file) = file {
+                let input = fs::read_to_string(file)
+                    .expect("Failed to open file"); 
+
+                detect_and_collect_report(&input, verbose, &mut output);
+
             } else {
                 let input = io::read_to_string(io::stdin()).unwrap();
-                check_ascii(&input);
-
-                let report = text_detect(&input);
-
-                if verbose {
-                    output.push_str(&report.long_description());
-                } else {
-                    output.push_str(&report.short_description());
-                }
+                detect_and_collect_report(&input, verbose, &mut output);
             }
         },
         Command::Convert { inline, from, to } => {

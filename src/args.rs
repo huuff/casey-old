@@ -16,6 +16,9 @@ pub enum Command {
 
         #[arg(short, long, help = "Single token to detect")]
         inline: Option<String>,
+
+        #[arg(short, long, help = "File on which to apply")]
+        file: Option<String>,
     },
     #[command(about = "Convert case")]
     Convert {
