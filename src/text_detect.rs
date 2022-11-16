@@ -25,7 +25,6 @@ impl DetectReport {
         }
     }
 
-    // TODO: Order by number of instances!
     pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
             return format!("{}", self.instances.keys().last().unwrap());
@@ -34,7 +33,13 @@ impl DetectReport {
         let total: u32 = self.instances.values().sum();
         let mut result: Vec<String> = Vec::new();
 
-        for (key, value) in self.instances.iter() {
+        let mut ordered_entries: Vec<(&Case, &u32)>
+            = self.instances.iter()
+                            .collect::<Vec<(&Case, &u32)>>()
+                            ;
+        ordered_entries.sort_by(|t1, t2| t2.1.cmp(t1.1));
+
+        for (key, value) in ordered_entries {
             let percentage: f32 = (*value as f32/total as f32) * 100f32;
             let description = std::format!("{}: {}%", key, percentage);
             result.push(description);
