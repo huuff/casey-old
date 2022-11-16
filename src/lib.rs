@@ -25,6 +25,13 @@ fn check_ascii(input: &str) {
     }
 }
 
+fn check_no_from(from: Option<String>) {
+    if from.is_some() {
+        println!("The --from flag is not allowed for this operation");
+        process::exit(1);
+    }
+}
+
 // TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
@@ -54,21 +61,28 @@ pub fn run(args: Args) -> String {
             }
         },
         Command::Convert { inline, from, to } => {
-            // TODO: optional "from": detect the most
-            // used case and do that one.
             let to = Case::parse(&to);
 
             match inline {
                 Some(input) => {
                     check_inline(&input);
                     check_ascii(&input);
+                    check_no_from(from);
 
                     output.push_str(&convert_token(&input, &to));
                 }
                 None => {
-                    let from = Case::parse(&from.unwrap());
-
                     let input = io::read_to_string(io::stdin()).unwrap();
+                    let from = match from {
+                        Some(it) => Case::parse(&it),
+                        None => text_detect(&input)
+                            .main_case()
+                            .unwrap_or_else(|| {
+                                println!("No case was detected in the provided input");
+                                process::exit(1);
+                            })
+                    };
+
                     check_ascii(&input);
 
                     output.push_str(&convert_text(&input, from, to));

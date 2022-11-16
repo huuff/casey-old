@@ -10,7 +10,7 @@ impl DetectReport {
        Self { instances } 
     }
 
-    fn main_case(&self) -> Option<Case> {
+    pub fn main_case(&self) -> Option<Case> {
         self.instances.iter()
             .max_by(|x, y| x.1.cmp(y.1))
             .map(|(key, _)| key)
@@ -25,6 +25,7 @@ impl DetectReport {
         }
     }
 
+    // TODO: Order by number of instances!
     pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
             return format!("{}", self.instances.keys().last().unwrap());
