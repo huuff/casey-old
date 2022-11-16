@@ -45,6 +45,24 @@ fn detect_and_collect_report(input: &str, verbose: bool, output: &mut String) {
     }
 }
 
+fn convert_and_collect_output(input: &str, from: Option<String>, to: String, output: &mut String) {
+    check_ascii(&input);
+
+    let to = Case::parse(&to);
+    let from = match from {
+        Some(it) => Case::parse(&it),
+        None => text_detect(&input)
+            .main_case()
+            .unwrap_or_else(|| {
+                println!("No case was detected in the provided input");
+                process::exit(1);
+            })
+    };
+
+
+    output.push_str(&convert_text(&input, from, to));
+}
+
 // TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
@@ -56,7 +74,7 @@ pub fn run(args: Args) -> String {
                 check_ascii(&input);
 
                 let case = Case::detect(&input);
-                
+
                 if let Some(case) = case {
                     output.push_str(&case.to_string());
                 }
@@ -71,34 +89,23 @@ pub fn run(args: Args) -> String {
                 detect_and_collect_report(&input, verbose, &mut output);
             }
         },
-        Command::Convert { inline, from, to } => {
-            let to = Case::parse(&to);
+        Command::Convert { inline, file, from, to } => {
+            if let Some(input) = inline {
+                check_inline(&input);
+                check_ascii(&input);
+                check_no_from(from);
+                let to = Case::parse(&to);
 
-            match inline {
-                Some(input) => {
-                    check_inline(&input);
-                    check_ascii(&input);
-                    check_no_from(from);
+                output.push_str(&convert_token(&input, &to));
+            } else if let Some(file) = file {
+                let input = fs::read_to_string(file)
+                            .expect("Couldn't read file");
+                convert_and_collect_output(&input, from, to, &mut output);
 
-                    output.push_str(&convert_token(&input, &to));
-                }
-                None => {
-                    let input = io::read_to_string(io::stdin()).unwrap();
-                    let from = match from {
-                        Some(it) => Case::parse(&it),
-                        None => text_detect(&input)
-                            .main_case()
-                            .unwrap_or_else(|| {
-                                println!("No case was detected in the provided input");
-                                process::exit(1);
-                            })
-                    };
+            } else {
+                let input = io::read_to_string(io::stdin()).unwrap();
+                convert_and_collect_output(&input, from, to, &mut output);
 
-                    check_ascii(&input);
-
-                    output.push_str(&convert_text(&input, from, to));
-
-                }
             }
         }
     };

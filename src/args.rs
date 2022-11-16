@@ -25,6 +25,9 @@ pub enum Command {
         #[arg(short, long, help = "Single token to convert")]
         inline: Option<String>,
 
+        #[arg(short, long, help = "File on which to apply")]
+        file: Option<String>,
+
         #[arg(short, long, help = "Source case")]
         from: Option<String>,
 
