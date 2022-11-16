@@ -17,7 +17,6 @@ impl DetectReport {
             .map(|case| case.clone())
     }
 
-    // TODO: Test
     pub fn short_description(&self) -> String {
         if let Some(case) = self.main_case() {
             format!("{}", case.to_string())
@@ -26,7 +25,6 @@ impl DetectReport {
         }
     }
 
-    // TODO: Test
     pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
             return format!("{}", self.instances.keys().last().unwrap());
