@@ -10,6 +10,22 @@ impl DetectReport {
        Self { instances } 
     }
 
+    fn main_case(&self) -> Option<Case> {
+        self.instances.iter()
+            .max_by(|x, y| x.1.cmp(y.1))
+            .map(|(key, _)| key)
+            .map(|case| case.clone())
+    }
+
+    // TODO: Test
+    pub fn short_description(&self) -> String {
+        if let Some(case) = self.main_case() {
+            format!("{}", case.to_string())
+        } else {
+            String::from("Couldn't detect case")
+        }
+    }
+
     // TODO: Test
     pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
@@ -49,3 +65,70 @@ pub fn text_detect(text: &str) -> DetectReport {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn main_case() {
+        // ARRANGE
+        let mut instances = HashMap::new();
+        instances.insert(Case::Camel, 3);
+        instances.insert(Case::Snake, 2);
+        instances.insert(Case::Pascal, 1);
+        let report = DetectReport { instances };
+
+        // ACT
+        let result = report.main_case();
+
+        // ASSERT
+        assert_eq!(Case::Camel, result.unwrap());
+    }
+
+    #[test]
+    fn short_description_not_found() {
+        // ARRANGE
+        let report = DetectReport { instances: HashMap::new() };
+
+        // ACT
+        let result = report.short_description();
+
+        // ASSERT
+        assert_eq!("Couldn't detect case", result);
+    }
+
+    #[test]
+    fn short_description() {
+        // ARRANGE
+        let mut instances = HashMap::new();
+        instances.insert(Case::Camel, 3);
+        instances.insert(Case::Snake, 2);
+        instances.insert(Case::Pascal, 1);
+        let report = DetectReport { instances };
+
+        // ACT
+        let result = report.short_description();
+
+        // ASSERT
+        assert_eq!("camelCase", result);
+    }
+
+    #[test]
+    fn long_description() {
+        // ARRANGE
+        let mut instances = HashMap::new();
+        instances.insert(Case::Camel, 1);
+        instances.insert(Case::Snake, 1);
+        instances.insert(Case::Pascal, 1);
+        let report = DetectReport { instances };
+
+        // ACT
+        let result = report.long_description();
+
+        // ASSERT
+        assert!(result.contains("camelCase: 33"));
+        assert!(result.contains("snake_case: 33"));
+        assert!(result.contains("PascalCase: 33"));
+    }
+
+}
