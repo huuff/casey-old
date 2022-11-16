@@ -50,7 +50,8 @@ pub fn run(args: Args) -> String {
             }
         },
         Command::Convert { inline, from, to } => {
-            // TODO: optional from
+            // TODO: optional "from": detect the most
+            // used case and do that one.
             let from = Case::parse(&from);
             let to = Case::parse(&to);
 
@@ -62,8 +63,6 @@ pub fn run(args: Args) -> String {
                     output.push_str(&convert_text(&input, from, to));
                 }
                 None => {
-                    // Wtf does the below comment mean?
-                    // TODO: Optional from here? (And just detect it)
                     let input = io::read_to_string(io::stdin()).unwrap();
                     check_ascii(&input);
 
