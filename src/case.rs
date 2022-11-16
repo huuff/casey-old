@@ -48,16 +48,13 @@ impl Case {
         }
     }
 
-    // TODO: Add SCREAMING_SNAKE
-    // TODO: This must be much more ergonomic to be useable, for exmaple:
-    // * Offering short, two-word versions like ss, kc, cc, and pc
-    // * Using just the first word like "snake", "kebab", "camel" or "pascal"
     pub fn parse(string: &str) -> Self {
         match string {
-            "snake_case" => Case::Snake,
-            "kebab-case" => Case::Kebab,
-            "camelCase" => Case::Camel,
-            "PascalCase" => Case::Pascal,
+            "snake_case" | "snake" | "sc" => Case::Snake,
+            "kebab-case" | "kebab" | "kc" => Case::Kebab,
+            "camelCase" | "camel" | "cc" => Case::Camel,
+            "PascalCase" | "pascal" | "pc" => Case::Pascal,
+            "SCREAMING_SNAKE" | "screaming" | "ssc" => Case::ScreamingSnake,
             _ => {
                 panic!("{} not recognized!", string);
             }
