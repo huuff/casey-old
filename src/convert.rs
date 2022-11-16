@@ -77,7 +77,7 @@ mod tests {
         let converted = convert_token(string, &Case::Camel);
 
         // ASSERT
-        assert_eq!(String::from("testWord"), converted);
+        assert_eq!("testWord", converted);
     }
 
     #[test]
@@ -89,7 +89,7 @@ mod tests {
         let converted = convert_token(string, &Case::Kebab);
 
         // ASSERT
-        assert_eq!(String::from("test-word"), converted);
+        assert_eq!("test-word", converted);
     }
 
     #[test]
@@ -101,7 +101,7 @@ mod tests {
         let converted = convert_token(string, &Case::Pascal);
 
         // ASSERT
-        assert_eq!(String::from("TestWord"), converted);
+        assert_eq!("TestWord", converted);
     }
 
     #[test]
@@ -113,7 +113,7 @@ mod tests {
         let converted = convert_token(string, &Case::Kebab);
 
         // ASSERT
-        assert_eq!(String::from("kind-of-long-test-phrase"), converted);
+        assert_eq!("kind-of-long-test-phrase", converted);
     }
 
     #[test]
@@ -125,7 +125,7 @@ mod tests {
         let converted = convert_token(string, &Case::ScreamingSnake);
 
         // ASSERT
-        assert_eq!(String::from("CAMEL_CASE"), converted);
+        assert_eq!("CAMEL_CASE", converted);
     }
 
     #[test]

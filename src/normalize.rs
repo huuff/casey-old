@@ -27,7 +27,7 @@ mod tests {
         let normalized = normalize(string);
 
         // ASSERT
-        assert_eq!(String::from("test word"), normalized);
+        assert_eq!("test word", normalized);
     }
 
     #[test]
@@ -39,7 +39,7 @@ mod tests {
         let normalized = normalize(string);
 
         // ASSERT
-        assert_eq!(String::from("test word"), normalized);
+        assert_eq!("test word", normalized);
     }
 
     #[test]
@@ -51,7 +51,7 @@ mod tests {
         let normalized = normalize(string);
 
         // ASSERT
-        assert_eq!(String::from("test word"), normalized);
+        assert_eq!("test word", normalized);
     }
 
     #[test]
@@ -63,7 +63,7 @@ mod tests {
         let normalized = normalize(string);
 
         // ASSERT
-        assert_eq!(String::from("test word"), normalized);
+        assert_eq!("test word", normalized);
     }
 
     #[test]
@@ -75,6 +75,6 @@ mod tests {
         let normalized = normalize(string);
 
         // ASSERT
-        assert_eq!(String::from("testword"), normalized);
+        assert_eq!("testword", normalized);
     }
 }
