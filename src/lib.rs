@@ -9,15 +9,23 @@ use crate::case::Case;
 use crate::convert::convert_text;
 use std::io;
 use crate::text_detect::text_detect;
+use std::process;
+
+fn check_inline(input: &str) {
+    if input.chars().any(|c| c.is_whitespace()) {
+        println!("Sorry, the --inline option only accepts single tokens with no whitespace");
+        process::exit(1);
+    }
+}
 
 // TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
 
     match args.command {
-        Command::Detect { input } => {
-            if let Some(input) = input {
-                // TODO: Fail somehow if string has whitespace
+        Command::Detect { inline } => {
+            if let Some(input) = inline {
+                check_inline(&input);
                 let case = Case::detect(&input);
                 
                 if let Some(case) = case {
@@ -31,12 +39,14 @@ pub fn run(args: Args) -> String {
                 output.push_str(&report.to_string());
             }
         },
-        Command::Convert { input, from, to } => {
+        Command::Convert { inline, from, to } => {
+            // TODO: optional from
             let from = Case::parse(&from);
             let to = Case::parse(&to);
 
-            match input {
+            match inline {
                 Some(input) => {
+                    check_inline(&input);
                     output.push_str(&convert_text(&input, from, to));
                 }
                 None => {

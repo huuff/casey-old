@@ -6,15 +6,16 @@ pub struct Args {
     pub command: Command,
 }
 
-// TODO: Literal inputs behind a flag? (--literal?)
 // TODO: Short arg options
 #[derive(Subcommand)]
 pub enum Command {
     Detect {
-        input: Option<String>,
+        #[arg(long)]
+        inline: Option<String>,
     },
     Convert {
-        input: Option<String>,
+        #[arg(long)]
+        inline: Option<String>,
 
         #[arg(long)]
         from: String,
