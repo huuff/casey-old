@@ -18,6 +18,13 @@ fn check_inline(input: &str) {
     }
 }
 
+fn check_ascii(input: &str) {
+    if input.chars().any(|c| !c.is_ascii()) {
+        println!("Sorry, this program only accepts ASCII");
+        process::exit(1);
+    }
+}
+
 // TODO: Test
 pub fn run(args: Args) -> String {
     let mut output = String::new();
@@ -26,6 +33,8 @@ pub fn run(args: Args) -> String {
         Command::Detect { inline } => {
             if let Some(input) = inline {
                 check_inline(&input);
+                check_ascii(&input);
+
                 let case = Case::detect(&input);
                 
                 if let Some(case) = case {
@@ -33,6 +42,7 @@ pub fn run(args: Args) -> String {
                 }
             } else {
                 let input = io::read_to_string(io::stdin()).unwrap();
+                check_ascii(&input);
 
                 let report = text_detect(&input);
 
@@ -47,12 +57,15 @@ pub fn run(args: Args) -> String {
             match inline {
                 Some(input) => {
                     check_inline(&input);
+                    check_ascii(&input);
+
                     output.push_str(&convert_text(&input, from, to));
                 }
                 None => {
                     // Wtf does the below comment mean?
                     // TODO: Optional from here? (And just detect it)
                     let input = io::read_to_string(io::stdin()).unwrap();
+                    check_ascii(&input);
 
                     output.push_str(&convert_text(&input, from, to));
 

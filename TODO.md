@@ -1,5 +1,4 @@
 # Tasks
-* Reject non-ascii input
 * Maybe print lines as they get processed instead of buffering everything?
 * Reading from a file
 * Specify several types of conversions for a single text
