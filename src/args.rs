@@ -16,12 +16,16 @@ pub enum Command {
     },
     #[command(about = "Convert case")]
     Convert {
-        // TODO: `from` always optional with `inline`
         #[arg(short, long, help = "Single token to convert")]
         inline: Option<String>,
 
-        #[arg(short, long, help = "Source case")]
-        from: String,
+        #[arg(
+            short,
+            long,
+            help = "Source case",
+            required_unless_present = "inline",
+        )]
+        from: Option<String>,
 
         #[arg(short, long, help = "Destination case")]
         to: String,

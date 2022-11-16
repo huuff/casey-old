@@ -6,7 +6,7 @@ pub mod text_detect;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
-use crate::convert::convert_text;
+use crate::convert::{convert_token, convert_text};
 use std::io;
 use crate::text_detect::text_detect;
 use std::process;
@@ -52,7 +52,6 @@ pub fn run(args: Args) -> String {
         Command::Convert { inline, from, to } => {
             // TODO: optional "from": detect the most
             // used case and do that one.
-            let from = Case::parse(&from);
             let to = Case::parse(&to);
 
             match inline {
@@ -60,9 +59,11 @@ pub fn run(args: Args) -> String {
                     check_inline(&input);
                     check_ascii(&input);
 
-                    output.push_str(&convert_text(&input, from, to));
+                    output.push_str(&convert_token(&input, &to));
                 }
                 None => {
+                    let from = Case::parse(&from.unwrap());
+
                     let input = io::read_to_string(io::stdin()).unwrap();
                     check_ascii(&input);
 
