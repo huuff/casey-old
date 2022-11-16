@@ -2,6 +2,8 @@
 name = "casey"
 version = "0.1.0"
 edition = "2021"
+authors = [ "haf" ]
+description = "Convert between case formats (e.g. camel_case, snake_case...) from the command line"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
