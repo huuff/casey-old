@@ -13,11 +13,15 @@ impl DetectReport {
 }
 
 impl fmt::Display for DetectReport {
+    // TODO: Test
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.instances.len() == 1 {
+            return write!(f, "{}", self.instances.keys().last().unwrap());
+        }
+
         let total: u32 = self.instances.values().sum();
         let mut result = String::new();
 
-        // TODO: Display only one if there's one
         for (key, value) in self.instances.iter() {
             let percentage: f32 = (*value as f32/total as f32) * 100f32;
             // TODO: Add to a string and then join
