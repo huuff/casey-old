@@ -11,6 +11,9 @@ pub struct Args {
 pub enum Command {
     #[command(about = "Detect case")]
     Detect {
+        #[arg(short, long, help = "Wether to show a full report of detected cases")]
+        verbose: bool,
+
         #[arg(short, long, help = "Single token to detect")]
         inline: Option<String>,
     },
