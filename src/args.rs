@@ -6,21 +6,20 @@ pub struct Args {
     pub command: Command,
 }
 
-// TODO: Short arg options
 #[derive(Subcommand)]
 pub enum Command {
     Detect {
-        #[arg(long)]
+        #[arg(short, long)]
         inline: Option<String>,
     },
     Convert {
-        #[arg(long)]
+        #[arg(short, long)]
         inline: Option<String>,
 
-        #[arg(long)]
+        #[arg(short, long)]
         from: String,
 
-        #[arg(long)]
+        #[arg(short, long)]
         to: String,
     }
 }
