@@ -77,6 +77,8 @@ pub fn run(args: Args) -> String {
 
                 if let Some(case) = case {
                     output.push_str(&case.to_string());
+                } else {
+                    output.push_str("Couldn't detect a case");
                 }
             } else if let Some(file) = file {
                 let input = fs::read_to_string(file)

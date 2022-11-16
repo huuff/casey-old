@@ -28,6 +28,8 @@ impl DetectReport {
     pub fn long_description(&self) -> String {
         if self.instances.len() == 1 {
             return format!("{}", self.instances.keys().last().unwrap());
+        } else if self.instances.len() == 0 {
+            return String::from("Couldn't detect a case");
         }
 
         let total: u32 = self.instances.values().sum();
