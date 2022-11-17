@@ -10,4 +10,5 @@ description = "Convert between case formats (e.g. camel_case, snake_case...) fro
 [dependencies]
 clap = { version = "4.0.23", features = ["derive"] }
 either = "1.8.0"
+itertools = "0.10.5"
 regex = "1.7.0"

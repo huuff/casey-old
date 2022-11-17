@@ -1,5 +1,6 @@
 use crate::case::Case;
 use crate::normalize::normalize;
+use itertools::Itertools;
 
 enum SeparatorAction {
     Append(char),
@@ -44,24 +45,60 @@ pub fn convert_token(string: &str, case: &Case) -> String {
 
 // XXX: Likely not efficient
 pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
-    text.lines()
-        .map(|line| {
-            line.split_ascii_whitespace()
-                .map(|token| {
-                    let token_case = Case::detect(token);
+    let mut result= String::new();
+    
+    let mut chars = text.chars()
+                        .peekable();
+
+    loop {
+        let next_char = chars.peek();
+
+        match next_char {
+            Some(next_char) => {
+                if next_char.is_whitespace() {
+                    result.push(chars.next().unwrap());
+                } else {
+                    // XXX: Copying the token to a new string...
+                    // can't I convert an iterator into a
+                    // string slice?
+                   let token = chars.by_ref().take_while_ref(|c| !c.is_ascii_whitespace()).collect::<String>();
+                    
+                    let token_case = Case::detect(&token);
 
                     if token_case.is_some() && token_case.unwrap() == from_case {
-                        convert_token(token, &to_case)
+                      result.push_str(&convert_token(&token, &to_case))
                     } else {
-                        String::from(token)
+                      result.push_str(&token);
                     }
 
-                })
-                .collect::<Vec<String>>()
-                .join(" ")
-        })
-        .collect::<Vec<String>>()
-        .join("\n")
+                }
+            }
+            None => {
+                break;
+            }
+        }
+    }
+
+    result
+
+    //text.lines()
+        //.map(|line| {
+            //line.split_ascii_whitespace()
+                //.map(|token| {
+                    //let token_case = Case::detect(token);
+
+                    //if token_case.is_some() && token_case.unwrap() == from_case {
+                        //convert_token(token, &to_case)
+                    //} else {
+                        //String::from(token)
+                    //}
+
+                //})
+                //.collect::<Vec<String>>()
+                //.join(" ")
+        //})
+        //.collect::<Vec<String>>()
+        //.join("\n")
 }
 
 #[cfg(test)]
