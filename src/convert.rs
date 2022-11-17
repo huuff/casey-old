@@ -80,25 +80,6 @@ pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
     }
 
     result
-
-    //text.lines()
-        //.map(|line| {
-            //line.split_ascii_whitespace()
-                //.map(|token| {
-                    //let token_case = Case::detect(token);
-
-                    //if token_case.is_some() && token_case.unwrap() == from_case {
-                        //convert_token(token, &to_case)
-                    //} else {
-                        //String::from(token)
-                    //}
-
-                //})
-                //.collect::<Vec<String>>()
-                //.join(" ")
-        //})
-        //.collect::<Vec<String>>()
-        //.join("\n")
 }
 
 #[cfg(test)]
