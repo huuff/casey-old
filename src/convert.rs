@@ -1,6 +1,7 @@
 use crate::case::Case;
 use crate::normalize::normalize;
 use itertools::Itertools;
+use crate::token::{is_token_char};
 
 enum SeparatorAction {
     Append(char),
@@ -43,7 +44,6 @@ pub fn convert_token(string: &str, case: &Case) -> String {
     result
 }
 
-// XXX: Likely not efficient
 pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
     let mut result= String::new();
     
@@ -55,13 +55,13 @@ pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
 
         match next_char {
             Some(next_char) => {
-                if next_char.is_whitespace() {
+                if !is_token_char(&next_char) {
                     result.push(chars.next().unwrap());
                 } else {
                     // XXX: Copying the token to a new string...
                     // can't I convert an iterator into a
                     // string slice?
-                   let token = chars.by_ref().take_while_ref(|c| !c.is_ascii_whitespace()).collect::<String>();
+                   let token = chars.by_ref().take_while_ref(|c| is_token_char(&c)).collect::<String>();
                     
                     let token_case = Case::detect(&token);
 
