@@ -1,4 +1,5 @@
 pub mod case;
+pub mod token;
 pub mod normalize;
 pub mod convert;
 pub mod args;
