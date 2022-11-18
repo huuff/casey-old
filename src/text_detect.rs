@@ -6,8 +6,16 @@ pub struct DetectReport {
 }
 
 impl DetectReport {
-    pub fn new(instances: HashMap<Case, u32>) -> Self {
-       Self { instances } 
+    pub fn new() -> Self {
+       Self { instances: HashMap::new() } 
+    }
+
+    pub fn register(&mut self, case: Case) {
+        if let Some(instances) = self.instances.get(&case) {
+            self.instances.insert(case, instances+1);
+        } else {
+            self.instances.insert(case, 1);
+        }
     }
 
     pub fn main_case(&self) -> Option<Case> {
@@ -52,23 +60,15 @@ impl DetectReport {
 
 
 pub fn text_detect(text: &str) -> DetectReport {
-    let mut result = HashMap::new();
+    let mut report = DetectReport::new();
 
-    for line in text.lines() {
-        for token in line.split_ascii_whitespace() {
-            if let Some(case) = Case::detect(token) {
-                if let Some(instances) = result.get(&case) {
-                    result.insert(case, instances+1);
-                } else {
-                    result.insert(case, 1);
-                }
-            }
+    for token in text.split_ascii_whitespace() {
+        if let Some(case) = Case::detect(token) {
+            report.register(case);
         }
     }
 
-    DetectReport {
-        instances: result,
-    }
+    report
 }
 
 #[cfg(test)]
