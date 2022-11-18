@@ -2,7 +2,6 @@ use crate::case::Case;
 use std::collections::HashMap;
 
 // TODO: At least for consistency, this should be a "detect" module, put detecting cases
-// here, and rename text_detect function to detect_text (like for convert_text)
 
 pub struct DetectReport {
     instances: HashMap<Case, u32>
@@ -61,7 +60,7 @@ impl DetectReport {
     } 
 }
 
-pub fn text_detect(text: &str, report: &mut DetectReport) {
+pub fn detect_text(text: &str, report: &mut DetectReport) {
     for token in text.split_ascii_whitespace() {
         if let Some(case) = Case::detect(token) {
             report.register(case);

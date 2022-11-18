@@ -1,6 +1,6 @@
 use std::io::{Write, Error, BufRead,};
 use crate::validation::check_ascii;
-use crate::text_detect::{text_detect, DetectReport};
+use crate::text_detect::{detect_text, DetectReport};
 use crate::case::Case;
 use crate::convert::convert_text;
 use std::process;
@@ -11,7 +11,7 @@ pub fn buffered_detect(input: Box<dyn BufRead>) -> Result<DetectReport, Error> {
     for line in input.lines() {
         let line = line?;
         check_ascii(&line);
-        text_detect(&line, &mut report);
+        detect_text(&line, &mut report);
     }
 
     Ok(report)
@@ -38,7 +38,7 @@ pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Ca
             input.read_to_string(&mut input_string)?;
             
             let mut case_report = DetectReport::new();
-            text_detect(&input_string, &mut case_report);
+            detect_text(&input_string, &mut case_report);
 
             let from = case_report
                         .main_case()
