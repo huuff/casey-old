@@ -1,8 +1,6 @@
 use crate::case::Case;
 use std::collections::HashMap;
 
-// TODO: At least for consistency, this should be a "detect" module, put detecting cases
-
 pub struct DetectReport {
     instances: HashMap<Case, u32>
 }

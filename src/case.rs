@@ -10,6 +10,7 @@ pub enum Case {
 }
 
 impl Case {
+    // XXX: Maybe this should be in the detect module?
     // TODO: do this all with regex
     pub fn detect(string: &str) -> Option<Case> {
         if string.is_empty() {

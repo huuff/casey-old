@@ -3,7 +3,7 @@ pub mod token;
 pub mod normalize;
 pub mod convert;
 pub mod args;
-pub mod text_detect;
+pub mod detect;
 pub mod validation;
 pub mod command;
 

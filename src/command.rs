@@ -1,6 +1,6 @@
 use std::io::{Write, Error, BufRead,};
 use crate::validation::check_ascii;
-use crate::text_detect::{detect_text, DetectReport};
+use crate::detect::{detect_text, DetectReport};
 use crate::case::Case;
 use crate::convert::convert_text;
 use std::process;
