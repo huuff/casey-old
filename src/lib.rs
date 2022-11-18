@@ -5,15 +5,16 @@ pub mod convert;
 pub mod args;
 pub mod text_detect;
 pub mod validation;
+pub mod command;
 
 use crate::args::{Args, Command};
 use crate::case::Case;
-use crate::convert::{convert_token, convert_text};
-use std::io::{self, Write, Error};
+use crate::convert::convert_token;
+use std::io::{self, Write, Error, BufReader, BufRead};
 use crate::text_detect::text_detect;
-use std::process;
 use std::fs;
 use crate::validation::{check_inline, check_ascii, check_no_from};
+use crate::command::run_convert;
 
 fn detect_and_collect_report(input: &str, verbose: bool, output: &mut impl Write) -> Result<usize, Error> {
     check_ascii(&input);
@@ -27,26 +28,10 @@ fn detect_and_collect_report(input: &str, verbose: bool, output: &mut impl Write
     }
 }
 
-fn convert_and_collect_output(input: &str, from: Option<String>, to: String, output: &mut impl Write) -> Result<usize, Error> {
-    check_ascii(&input);
-
-    let to = Case::parse(&to);
-    let from = match from {
-        Some(it) => Case::parse(&it),
-        None => text_detect(&input)
-            .main_case()
-            .unwrap_or_else(|| {
-                println!("No case was detected in the provided input");
-                process::exit(1);
-            })
-    };
-
-
-    output.write(convert_text(&input, from, to).as_bytes())
-}
 
 // TODO: Test
 // TODO: Use input with an abstraction, as for output (i.e., use std::io::Read)
+// TODO: Better result type (Result<(), Error>)
 pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
     match args.command {
         Command::Detect { inline, file, verbose } => {
@@ -73,23 +58,31 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
             }
         },
         Command::Convert { inline, file, from, to } => {
+            let to = Case::parse(&to);
+            let from = from.and_then(|case| Case::detect(&case));
+
             if let Some(input) = inline {
                 check_inline(&input);
                 check_ascii(&input);
-                check_no_from(from);
-                let to = Case::parse(&to);
+                check_no_from(&from);
 
                 output.write(convert_token(&input, &to).as_bytes())
-            } else if let Some(file) = file {
-                let input = fs::read_to_string(file)
-                            .expect("Couldn't read file");
-                convert_and_collect_output(&input, from, to, output)
-
             } else {
-                let input = io::read_to_string(io::stdin()).unwrap();
-                convert_and_collect_output(&input, from, to, output)
+                let input: Box<dyn BufRead> = if let Some(file) = file {
+                    Box::new(BufReader::new(fs::File::open(file)?))
+                } else {
+                    Box::new(BufReader::new(io::stdin()))
+                };
+                let input = BufReader::new(input);
 
-            }
+                for line in input.lines() {
+                    run_convert(&line?, from, to, output)?;
+                    output.write("\n".as_bytes())?;
+                }
+                
+                Ok(0)
+
+            } 
         }
     }
 }

@@ -1,13 +1,14 @@
 use crate::case::Case;
 use crate::normalize::normalize;
 use itertools::Itertools;
-use crate::token::{is_token_char};
+use crate::token::is_token_char;
 
 enum SeparatorAction {
     Append(char),
     Uppercase,
 }
 
+// TODO: Remove ref from case
 pub fn convert_token(string: &str, case: &Case) -> String {
     let mut result = String::new();
     let separator_action = match case {

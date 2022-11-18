@@ -1,4 +1,5 @@
 use std::process;
+use crate::case::Case;
 
 
 pub fn check_inline(input: &str) {
@@ -15,7 +16,7 @@ pub fn check_ascii(input: &str) {
     }
 }
 
-pub fn check_no_from(from: Option<String>) {
+pub fn check_no_from(from: &Option<Case>) {
     if from.is_some() {
         eprintln!("The --from flag is not allowed for this operation");
         process::exit(1);
