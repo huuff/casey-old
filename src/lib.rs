@@ -11,26 +11,19 @@ use crate::args::{Args, Command};
 use crate::case::Case;
 use crate::convert::convert_token;
 use std::io::{self, Write, Error, BufReader, BufRead};
-use crate::text_detect::text_detect;
 use std::fs;
 use crate::validation::{check_inline, check_ascii, check_no_from};
-use crate::command::run_convert;
+use crate::command::{buffered_convert, buffered_detect};
 
-fn detect_and_collect_report(input: &str, verbose: bool, output: &mut impl Write) -> Result<usize, Error> {
-    check_ascii(&input);
-
-    let report = text_detect(&input);
-
-    if verbose {
-        output.write(report.long_description().as_bytes())
+fn choose_stream(file_name: Option<String>) -> Result<Box<dyn BufRead>, Error> {
+    if let Some(file_name) = file_name {
+        Ok(Box::new(BufReader::new(fs::File::open(file_name)?)))
     } else {
-        output.write(report.short_description().as_bytes())
+        Ok(Box::new(BufReader::new(io::stdin())))
     }
 }
 
-
 // TODO: Test
-// TODO: Use input with an abstraction, as for output (i.e., use std::io::Read)
 // TODO: Better result type (Result<(), Error>)
 pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
     match args.command {
@@ -42,19 +35,20 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
                 let case = Case::detect(&input);
 
                 if let Some(case) = case {
-                    output.write(case.to_string().as_bytes())
+                    output.write(case.to_string().as_bytes())?
                 } else {
-                    output.write("Couldn't detect a case".as_bytes())
-                }
-            } else if let Some(file) = file {
-                let input = fs::read_to_string(file)
-                    .expect("Failed to open file"); 
-
-                detect_and_collect_report(&input, verbose, output)
-
+                    output.write("Couldn't detect a case".as_bytes())?
+                };
             } else {
-                let input = io::read_to_string(io::stdin()).unwrap();
-                detect_and_collect_report(&input, verbose, output)
+                let input = choose_stream(file)?;
+
+                let report = buffered_detect(input)?;
+
+                if verbose {
+                    output.write(report.long_description().as_bytes())?;
+                } else {
+                    output.write(report.short_description().as_bytes())?;
+                };
             }
         },
         Command::Convert { inline, file, from, to } => {
@@ -66,23 +60,13 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
                 check_ascii(&input);
                 check_no_from(&from);
 
-                output.write(convert_token(&input, &to).as_bytes())
+                output.write(convert_token(&input, &to).as_bytes())?;
             } else {
-                let input: Box<dyn BufRead> = if let Some(file) = file {
-                    Box::new(BufReader::new(fs::File::open(file)?))
-                } else {
-                    Box::new(BufReader::new(io::stdin()))
-                };
-                let input = BufReader::new(input);
+                let input = choose_stream(file)?;
 
-                for line in input.lines() {
-                    run_convert(&line?, from, to, output)?;
-                    output.write("\n".as_bytes())?;
-                }
-                
-                Ok(0)
-
-            } 
+                buffered_convert(input, from, to, output)?;
+            };
         }
     }
+    Ok(0)
 }
