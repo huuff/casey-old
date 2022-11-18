@@ -31,7 +31,6 @@ pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Ca
                 output.write("\n".as_bytes())?;
             }
         },
-        // TODO: unwrap_or?
         // If no source case is given, detect the most used one
         None => {
             eprintln!("Please note that converted from an auto-detected case requires buffering the whole input into memory and might be unfeasible with larger ones.\n");
