@@ -19,7 +19,7 @@ pub fn buffered_detect(input: Box<dyn BufRead>) -> Result<DetectReport, Error> {
 
 // XXX: Repetition for printing the lines... but nothing else
 // would satisfy Rust
-pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Case, output: &mut impl Write) -> Result<usize, Error> {
+pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Case, output: &mut impl Write) -> Result<(), Error> {
     match from {
         Some(from) => {
 
@@ -57,7 +57,7 @@ pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Ca
         }
     }
 
-    Ok(0)
+    Ok(())
 }
 
 

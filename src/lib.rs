@@ -24,8 +24,7 @@ fn choose_stream(file_name: Option<String>) -> Result<Box<dyn BufRead>, Error> {
 }
 
 // TODO: Test
-// TODO: Better result type (Result<(), Error>)
-pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
+pub fn run(args: Args, output: &mut impl Write) -> Result<(), Error> {
     match args.command {
         Command::Detect { inline, file, verbose } => {
             if let Some(input) = inline {
@@ -68,5 +67,5 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
             };
         }
     }
-    Ok(0)
+    Ok(())
 }
