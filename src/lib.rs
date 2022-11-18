@@ -60,7 +60,7 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
                 check_ascii(&input);
                 check_no_from(&from);
 
-                output.write(convert_token(&input, &to).as_bytes())?;
+                output.write(convert_token(&input, to).as_bytes())?;
             } else {
                 let mut input = choose_stream(file)?;
 

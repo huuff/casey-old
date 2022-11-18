@@ -8,8 +8,7 @@ enum SeparatorAction {
     Uppercase,
 }
 
-// TODO: Remove ref from case
-pub fn convert_token(string: &str, case: &Case) -> String {
+pub fn convert_token(string: &str, case: Case) -> String {
     let mut result = String::new();
     let separator_action = match case {
         Case::Snake | Case::ScreamingSnake => SeparatorAction::Append('_'),
@@ -20,7 +19,7 @@ pub fn convert_token(string: &str, case: &Case) -> String {
 
     let normalized = normalize(string);
 
-    let mut uppercase_next = *case == Case::ScreamingSnake || *case == Case::Pascal;
+    let mut uppercase_next = case == Case::ScreamingSnake || case == Case::Pascal;
     for c in normalized.chars() {
         if c == ' ' {
             if let SeparatorAction::Append(separator) = separator_action {
@@ -37,7 +36,7 @@ pub fn convert_token(string: &str, case: &Case) -> String {
             }
         }
 
-        if *case == Case::ScreamingSnake {
+        if case == Case::ScreamingSnake {
             uppercase_next = true;
         }
     }
@@ -67,7 +66,7 @@ pub fn convert_text(text: &str, from_case: Case, to_case: Case) -> String {
                     let token_case = Case::detect(&token);
 
                     if token_case.is_some() && token_case.unwrap() == from_case {
-                      result.push_str(&convert_token(&token, &to_case))
+                      result.push_str(&convert_token(&token, to_case))
                     } else {
                       result.push_str(&token);
                     }
@@ -93,7 +92,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, &Case::Camel);
+        let converted = convert_token(string, Case::Camel);
 
         // ASSERT
         assert_eq!("testWord", converted);
@@ -105,7 +104,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, &Case::Kebab);
+        let converted = convert_token(string, Case::Kebab);
 
         // ASSERT
         assert_eq!("test-word", converted);
@@ -117,7 +116,7 @@ mod tests {
         let string = "test_word";
 
         // ACT
-        let converted = convert_token(string, &Case::Pascal);
+        let converted = convert_token(string, Case::Pascal);
 
         // ASSERT
         assert_eq!("TestWord", converted);
@@ -129,7 +128,7 @@ mod tests {
         let string = "kindOfLongTestPhrase";
 
         // ACT
-        let converted = convert_token(string, &Case::Kebab);
+        let converted = convert_token(string, Case::Kebab);
 
         // ASSERT
         assert_eq!("kind-of-long-test-phrase", converted);
@@ -141,7 +140,7 @@ mod tests {
         let string = "camelCase";
 
         // ACT
-        let converted = convert_token(string, &Case::ScreamingSnake);
+        let converted = convert_token(string, Case::ScreamingSnake);
 
         // ASSERT
         assert_eq!("CAMEL_CASE", converted);
