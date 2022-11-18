@@ -62,9 +62,9 @@ pub fn run(args: Args, output: &mut impl Write) -> Result<usize, Error> {
 
                 output.write(convert_token(&input, &to).as_bytes())?;
             } else {
-                let input = choose_stream(file)?;
+                let mut input = choose_stream(file)?;
 
-                buffered_convert(input, from, to, output)?;
+                buffered_convert(&mut input, from, to, output)?;
             };
         }
     }

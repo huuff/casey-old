@@ -17,27 +17,44 @@ pub fn buffered_detect(input: Box<dyn BufRead>) -> Result<DetectReport, Error> {
     Ok(report)
 }
 
-pub fn buffered_convert(input: Box<dyn BufRead>, from: Option<Case>, to: Case, output: &mut impl Write) -> Result<usize, Error> {
-    // TODO: unwrap_or?
-    // If no source case is given, detect the most used one
-    // TODO: Not working, need to buffer everything in memory
-    //let from = match from {
-        //Some(it) => it,
-        //None => buffered_detect(input)?
-                //.main_case()
-                //.unwrap_or_else(|| {
-                    //eprintln!("No case was detected in the provided input");
-                    //process::exit(1);
-                //})
-    //};
-    
-    let from = from.unwrap_or(Case::Snake);
+// XXX: Repetition for printing the lines... but nothing else
+// would satisfy Rust
+pub fn buffered_convert(input: &mut Box<dyn BufRead>, from: Option<Case>, to: Case, output: &mut impl Write) -> Result<usize, Error> {
+    match from {
+        Some(from) => {
 
-    for line in input.lines() {
-        let line = line?;
-        check_ascii(&line);
+            for line in input.lines() {
+                let line = line?;
+                check_ascii(&line);
 
-        output.write(convert_text(&line, from, to).as_bytes())?;
+                output.write(convert_text(&line, from, to).as_bytes())?;
+                output.write("\n".as_bytes())?;
+            }
+        },
+        // TODO: unwrap_or?
+        // If no source case is given, detect the most used one
+        None => {
+            let mut input_string = String::new();
+            input.read_to_string(&mut input_string)?;
+            
+            let mut case_report = DetectReport::new();
+            text_detect(&input_string, &mut case_report);
+
+            let from = case_report
+                        .main_case()
+                        .unwrap_or_else(|| {
+                            eprintln!("No case was detected in the provided input");
+                            process::exit(1);
+                        });
+
+            for line in input_string.lines() {
+                check_ascii(&line);
+
+                output.write(convert_text(&line, from, to).as_bytes())?;
+                output.write("\n".as_bytes())?;
+            }
+
+        }
     }
 
     Ok(0)
